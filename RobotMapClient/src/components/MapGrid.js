@@ -1,0 +1,70 @@
+import React, { useState, useEffect, useRef } from 'react';
+import MapElement from "../components/MapElement"
+import { getColor } from '../apiCaller'
+import { move } from '../RobotMovement'
+import socketIOClient from "socket.io-client";
+const ENDPOINT = "federicoshytte.dk/socket";
+const socket = socketIOClient(ENDPOINT);
+let firstColor = false;
+function MapGrid(props) {
+   
+    const [elementGrid, setElementGrid] = useState([
+        ["empty", "empty", "empty", "red", "empty"],
+        ["empty", "empty", "empty", "empty", "empty"],
+        ["empty", "empty", "empty", "empty", "empty"],
+        ["empty", "empty", "empty", "empty", "empty"],
+        ["empty", "empty", "empty", "empty", "empty"]
+    ])
+    const [response, setResponse] = useState("");
+
+    //test code
+    const [input, setInput] = useState("");
+
+    function handleChange(event){
+        const {value, name} = event.target
+        setInput(value)
+    }
+
+    async function changeGrid(color, direction) {
+        let tempGrid = [...elementGrid]
+        setElementGrid(move(tempGrid, color, direction))
+        
+    }
+
+    useEffect(() => {
+        socket.on("colorinfo", data => {
+            console.log("gotten info")
+            changeGrid(data.color, data.direction)
+        });
+        
+    }, [])
+
+    useEffect(() => {
+        console.log(elementGrid)
+    }, [elementGrid]);
+    
+    return (
+        <ul className="elements">
+            {elementGrid.map((element, index) => {
+                return ( 
+                    <li className={"element-collumn " + index} key={index}>
+                         {element.map((e, i) => {
+                             return (
+                                 
+                                <MapElement key={i} color={((typeof e == "string" || typeof e == "object") ? e : "empty")}/>
+                             )
+                             
+                         })}    
+                    </li>   
+                    )    
+            })}
+            <button onClick={changeGrid}>wd</button>
+            <input style={{
+                color: "black"
+            }} onChange={handleChange}></input>
+        </ul>
+        
+    )
+}
+
+export default MapGrid
