@@ -147,6 +147,9 @@ p {
 
 }
 
+.timer {
+    width: 10%;
+}
 
 .element-collumn {
     /* flex: 0 0 100%; */

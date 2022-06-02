@@ -1,12 +1,17 @@
 let loc = { x: 0, y: 4 }
 let dim = { x: 5, y: 5 }
 let firstColor = true;
-
+let stopTimer = false;
+let startTimer = false;
 export function move(grid, color, direction) {
     if(firstColor) {
         grid[0][4] = color;
         firstColor = false;
-        return grid;
+        startTimer = true;
+        let isFirst = {grid: grid, startTimer: startTimer, stopTimer: false};
+        return isFirst;
+    } else {
+        startTimer = false;
     }
     switch (direction) {
         case "north":
@@ -77,14 +82,16 @@ export function move(grid, color, direction) {
 
             loc.x++
             break
+        case "stop":
+            stopTimer = true;
+            break
         default:
             console.log("Not a valid direction");
             break
     }
-
-
     console.log(loc)
     console.log(dim)
-    return grid
+    let isFirst = {grid: grid, startTimer: false, stopTimer: stopTimer};
+    return isFirst
 }
 

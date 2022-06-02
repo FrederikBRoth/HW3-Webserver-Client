@@ -17,19 +17,12 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.text())
 
-app.get("/testing", (req, res) => {
-  console.log("please work")
-})
 const nsp= io.of('/socket');
 nsp.on('connection', (socket) => {
   console.log('io connected');
 });
 app.post("/colors", (req, res) => {
   let data = {color: {red: 0, green: 0, blue: 0}, direction: ""}
-  // let colors = text.split(":")
-  // color.red = parseFloat(colors[0])
-  // color.green = parseFloat(colors[1])
-  // color.blue = parseFloat(colors[2])
   let datastring = req.headers.tester.split(":");
   data.color.red = datastring[0]
   data.color.green = datastring[1]
